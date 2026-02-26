@@ -137,28 +137,25 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
-      - name: 获取时间
-        run: |
-          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
-          echo "TIME=$TIME" >> $GITHUB_ENV
-          echo $env.TIME
-
-      - name: 列出 ${{ github.workspace }} 文件夹的树状结构
-        run: |
-          # 安装 tree（Ubuntu 镜像默认没有）
-          sudo apt update && sudo apt install -y tree
-          # 列出 bin 文件夹的树状结构（限制3层）
-          tree -L 5 ${{ github.workspace }}
-        shell: bash
-
       - name: 压缩bin
         run: |
           cd ${{ github.workspace }}
           tar -zcvf bin-x86-64.tar.gz bin/
         shell: bash
 
+      - name: 列出 ${{ github.workspace }} 文件夹的树状结构
+        run: |
+          sudo apt update && sudo apt install -y tree
+          tree -L 5 ${{ github.workspace }}
+        shell: bash
+
+      - name: 获取时间
+        run: |
+          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
+          echo "TIME=$TIME" >> $GITHUB_ENV
+          echo $env.TIME
       - name: Upload ImmortWrt as release assets
-        uses: softprops/action-gh-release@v2.2.1
+        uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: ImmortWrt-x86-64-${{ env.TIME }}
           body_path: ${{ github.workspace }}/router-info.md
