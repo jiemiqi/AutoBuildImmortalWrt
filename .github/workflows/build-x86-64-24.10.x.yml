@@ -90,9 +90,12 @@ jobs:
 
       - name: 修改源版本-${{ github.event.inputs.luci_version }}
         run: |
-            echo 'luci_version="${{ github.event.inputs.luci_version }}"' >> x86-64/build24.sh
-            echo "✅ 已修改 ${{ github.event.inputs.luci_version }}" 
-            cat x86-64/build24.sh
+            # 1. 处理特殊字符（避免 sed 解析报错）
+            LUCI_VERSION="${{ github.event.inputs.luci_version }}"
+            # 2. 在文件第1行插入变量定义（如果文件为空也能正常执行）
+            sed -i "1i luci_version=$LUCI_VERSION" x86-64/build24.sh
+        shell: bash
+
 
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
