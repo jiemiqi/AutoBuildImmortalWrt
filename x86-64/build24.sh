@@ -8,7 +8,7 @@ echo "编译固件大小为: $PROFILE MB"
 echo "Include Docker: $INCLUDE_DOCKER"
 
 echo "Create pppoe-settings"
-mkdir -p  /home/build/immortalwrt/files/etc/config
+mkdir -p /home/build/immortalwrt/files/etc/config
 
 # 创建pppoe配置文件 yml传入环境变量ENABLE_PPPOE等 写入配置文件 供99-custom.sh读取
 cat << EOF > /home/build/immortalwrt/files/etc/config/pppoe-settings
@@ -120,6 +120,12 @@ ls /home/build/immortalwrt
 echo "⚪️ 添加主题"
 cd /home/build/immortalwrt/packages
 git clone https://github.com/jerrykuku/luci-theme-argon.git
+
+cd "/home/build/immortalwrt"
+cat ./scripts/feeds
+./scripts/feeds update -a
+./scripts/feeds install -a
+
 echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
 
