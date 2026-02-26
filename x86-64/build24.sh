@@ -124,7 +124,7 @@ ls /home/build/immortalwrt
 # ./scripts/feeds update -a
 # ./scripts/feeds install -a
 
-echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
+# echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
