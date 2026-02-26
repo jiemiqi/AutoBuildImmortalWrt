@@ -22,7 +22,7 @@ on:
       profile:
         description: '请输入要编译固件大小 单位(MB)'
         required: true
-        default: '1024'
+        default: '2048'
       enable_store:
         description: "集成 store 商店"
         required: false
@@ -92,6 +92,7 @@ jobs:
         run: |
             echo 'luci_version="${{ github.event.inputs.luci_version }}"' >> x86-64/build24.sh
             echo "✅ 已修改 ${{ github.event.inputs.luci_version }}" 
+            cat x86-64/build24.sh
 
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |

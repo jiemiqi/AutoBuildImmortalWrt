@@ -100,7 +100,7 @@ fi
 
 REPO_FILE="/home/build/immortalwrt/repositories.conf"
 
-echo "⚪️ 修改为中科大源"
+echo "⚪️ 修改为中科大源 immortalwrt版本：$luci_version"
 cat > "$REPO_FILE" << EOF
 src/gz immortalwrt_core https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/targets/x86/64/packages
 src/gz immortalwrt_base https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/base
@@ -122,7 +122,7 @@ cd /home/build/immortalwrt/packages
 git clone https://github.com/jerrykuku/luci-theme-argon.git
 
 cd "/home/build/immortalwrt"
-cat ./scripts/feeds
+# cat ./scripts/feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
