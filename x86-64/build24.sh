@@ -75,14 +75,25 @@ fi
 # 若构建openclash 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
     echo "✅ 已选择 luci-app-openclash，添加 openclash core"
-    mkdir -p files/etc/openclash/core
+    OPENCLASH_CORE_DIR=files/etc/openclash/core
+    mkdir -p $OPENCLASH_CORE_DIR
+    cd $OPENCLASH_CORE_DIR
+
     # Download clash_meta
-    META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-amd64.tar.gz"
-    wget -qO- $META_URL | tar xOvz > files/etc/openclash/core/clash_meta
-    chmod +x files/etc/openclash/core/clash_meta
+    echo "正在下载Clash Meta"
+    CLASH_DEV_URL="https://github.com/vernesong/OpenClash/releases/download/Clash/clash-linux-amd64.tar.gz"
+    CLASH_TUN_URL="https://raw.githubusercontent.com/vernesong/OpenClash/refs/heads/core/master/premium/clash-linux-amd64-2023.08.17-13-gdcc8d87.gz"
+    CLASH_META_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.19.20/mihomo-linux-amd64-v1.19.20.gz"
+
+    wget -qO- "$CLASH_DEV_URL" | tar xOvz > clash && chmod +x clash
+    wget -qO- "$CLASH_TUN_URL" | gunzip -c > clash_tun && chmod +x clash_tun
+    wget -qO- "$CLASH_META_URL" | gunzip -c > clash_meta && chmod +x clash_meta
+
+
     # Download GeoIP and GeoSite
-    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -O files/etc/openclash/GeoIP.dat
-    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -O files/etc/openclash/GeoSite.dat
+    wget -qO GeoSite.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+    wget -qO GeoIP.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoIP.dat"
+    wget -qO geoip.metadb "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb"
 else
     echo "⚪️ 未选择 luci-app-openclash"
 fi
@@ -91,23 +102,28 @@ REPO_FILE="/home/build/immortalwrt/repositories.conf"
 
 echo "⚪️ 修改为中科大源"
 cat > "$REPO_FILE" << EOF
-src/gz immortalwrt_core https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/targets/x86/64/packages
-src/gz immortalwrt_base https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/base
-src/gz immortalwrt_kmods https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/targets/x86/64/kmods/6.6.122-1-e7e50fbc0aafa7443418a79928da2602
-src/gz immortalwrt_luci https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/luci
-src/gz immortalwrt_packages https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/packages
-src/gz immortalwrt_routing https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/routing
-src/gz immortalwrt_telephony https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/telephony
+src/gz immortalwrt_core https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/targets/x86/64/packages
+src/gz immortalwrt_base https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/base
+src/gz immortalwrt_kmods https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/targets/x86/64/kmods/6.6.122-1-e7e50fbc0aafa7443418a79928da2602
+src/gz immortalwrt_luci https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/luci
+src/gz immortalwrt_packages https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/packages
+src/gz immortalwrt_routing https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/routing
+src/gz immortalwrt_telephony https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/telephony
 EOF
 
 echo -e "\n===== 当前 $REPO_FILE 配置内容 ====="
 cat $REPO_FILE
 echo -e "===== $REPO_FILE 打印结束 =====\n"
 
-echo "⚪️ 更新软件"
+echo "⚪️ 添加主题"
+cd /home/build/immortalwrt/package
+git clone https://github.com/jerrykuku/luci-theme-argon.git
+echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
-/home/build/immortalwrt/scripts/feeds update -a
-/home/build/immortalwrt/scripts/feeds install -a
+
+
+
+
 
 
 # 构建镜像

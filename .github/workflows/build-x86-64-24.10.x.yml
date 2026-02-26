@@ -88,6 +88,11 @@ jobs:
             echo "❎ 未启用 luci-app-store"
           fi
 
+      - name: 修改源版本-${{ github.event.inputs.luci_version }}
+        run: |
+            echo 'luci_version="${{ github.event.inputs.enable_store }}"' >> /x86-64/build24.sh
+            echo "✅ 已修改 ${{ github.event.inputs.enable_store }}" 
+
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
           profile="${{ github.event.inputs.profile }}"
@@ -130,13 +135,25 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
+      - name: 获取时间
+        run: |
+          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
+          echo "TIME=$TIME" >> $GITHUB_ENV
+          echo $env.TIME
+      
+      - name: 压缩bin
+        run: |
+          cd ${{ github.workspace }}
+          tar -zcvf bin-x86-64.tar.gz bin/
+        shell: bash
+
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: Autobuild-x86-64
+          tag_name: ImmortWrt-x86-64-${{ env.TIME }}
           body_path: ${{ github.workspace }}/router-info.md
           files: |
-            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
+            ${{ github.workspace }}/bin-x86-64.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
