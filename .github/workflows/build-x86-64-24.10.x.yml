@@ -137,11 +137,11 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
-      - name: 压缩bin
-        run: |
-          cd ${{ github.workspace }}
-          tar -zcvf bin-x86-64.tar.gz bin/
-        shell: bash
+      # - name: 压缩bin
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     tar -zcvf bin-x86-64.tar.gz bin/
+      #   shell: bash
 
       - name: 列出 ${{ github.workspace }} 文件夹的树状结构
         run: |
@@ -160,7 +160,14 @@ jobs:
           tag_name: ImmortWrt-x86-64-${{ env.TIME }}
           body_path: ${{ github.workspace }}/router-info.md
           files: |
-            ${{ github.workspace }}/bin-x86-64.tar.gz
+            ${{ github.workspace }}/bin/*kernel.bin
+            ${{ github.workspace }}/bin/*rootfs.tar.gz
+            ${{ github.workspace }}/bin/*squashfs-combined-efi.img.gz
+            ${{ github.workspace }}/bin/*squashfs-rootfs.img.gz
+            ${{ github.workspace }}/bin/*bom.cdx.json
+            ${{ github.workspace }}/bin/*manifest
+            ${{ github.workspace }}/bin/profiles.json
+            ${{ github.workspace }}/bin/sha256sums
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

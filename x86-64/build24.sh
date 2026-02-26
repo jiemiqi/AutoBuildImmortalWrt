@@ -121,7 +121,7 @@ cd "/home/build/immortalwrt"
 ./scripts/feeds install -a
 
 # 构建镜像
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
+echo "$(date '+%Y-%m-%d %H:%M:%S') 构建镜像- 使用以下包构建镜像:"
 echo "$PACKAGES"
 
 make image PROFILE="generic" PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$PROFILE
