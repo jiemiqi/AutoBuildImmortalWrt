@@ -90,8 +90,8 @@ jobs:
 
       - name: 修改源版本-${{ github.event.inputs.luci_version }}
         run: |
-            echo 'luci_version="${{ github.event.inputs.enable_store }}"' >> /x86-64/build24.sh
-            echo "✅ 已修改 ${{ github.event.inputs.enable_store }}" 
+            echo 'luci_version="${{ github.event.inputs.luci_version }}"' >> x86-64/build24.sh
+            echo "✅ 已修改 ${{ github.event.inputs.luci_version }}" 
 
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
