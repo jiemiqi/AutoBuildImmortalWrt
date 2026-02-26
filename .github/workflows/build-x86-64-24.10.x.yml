@@ -137,18 +137,6 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
-      # - name: 压缩bin
-      #   run: |
-      #     cd ${{ github.workspace }}
-      #     tar -zcvf bin-x86-64.tar.gz bin/
-      #   shell: bash
-
-      - name: 列出 ${{ github.workspace }} 文件夹的树状结构
-        run: |
-          sudo apt update && sudo apt install -y tree
-          tree -L 5 ${{ github.workspace }}
-        shell: bash
-
       - name: 获取时间
         run: |
           TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
@@ -156,7 +144,25 @@ jobs:
           echo $env.TIME
         shell: bash
 
-      - name: Upload ImmortWrt as release assets
+      - name: 压缩bin
+        run: |
+          tar -zcvf ${{ github.workspace }}/bin/targets/x86/64/ImmortWrt-x86-64-${{ env.TIME }}.tar.gz ${{ github.workspace }}/bin/targets/x86/64/
+        shell: bash
+
+      - name: 列出 ${{ github.workspace }} 文件夹的树状结构
+        run: |
+          sudo apt update && sudo apt install -y tree
+          tree -L 5 ${{ github.workspace }}
+        shell: bash
+
+      - name: 提供下载压缩包
+        uses: actions/upload-artifact@v4
+        with:
+          name: ImmortWrt-x86-64-${{ env.TIME }}
+          path: ${{ github.workspace }}/bin/targets/x86/64/
+          retention-days: 5
+
+      - name: 将 ImmortWrt 上传为发布资源
         uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: ImmortWrt-x86-64-${{ env.TIME }}
@@ -170,6 +176,7 @@ jobs:
             ${{ github.workspace }}/bin/targets/x86/64/*manifest
             ${{ github.workspace }}/bin/targets/x86/64/profiles.json
             ${{ github.workspace }}/bin/targets/x86/64/sha256sums
+            # ${{ github.workspace }}/bin/targets/x86/64/ImmortWrt-x86-64-${{ env.TIME }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
