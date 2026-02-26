@@ -154,20 +154,22 @@ jobs:
           TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
           echo "TIME=$TIME" >> $GITHUB_ENV
           echo $env.TIME
+        shell: bash
+
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: ImmortWrt-x86-64-${{ env.TIME }}
           body_path: ${{ github.workspace }}/router-info.md
           files: |
-            ${{ github.workspace }}/bin/*kernel.bin
-            ${{ github.workspace }}/bin/*rootfs.tar.gz
-            ${{ github.workspace }}/bin/*squashfs-combined-efi.img.gz
-            ${{ github.workspace }}/bin/*squashfs-rootfs.img.gz
-            ${{ github.workspace }}/bin/*bom.cdx.json
-            ${{ github.workspace }}/bin/*manifest
-            ${{ github.workspace }}/bin/profiles.json
-            ${{ github.workspace }}/bin/sha256sums
+            ${{ github.workspace }}/bin/targets/x86/64/*kernel.bin
+            ${{ github.workspace }}/bin/targets/x86/64/*rootfs.tar.gz
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-rootfs.img.gz
+            ${{ github.workspace }}/bin/targets/x86/64/*bom.cdx.json
+            ${{ github.workspace }}/bin/targets/x86/64/*manifest
+            ${{ github.workspace }}/bin/targets/x86/64/profiles.json
+            ${{ github.workspace }}/bin/targets/x86/64/sha256sums
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
