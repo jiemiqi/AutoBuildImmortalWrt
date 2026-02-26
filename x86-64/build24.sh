@@ -89,7 +89,7 @@ fi
 
 
 echo -e "\n===== 当前 feeds.conf.default 配置内容 ====="
-cat /home/build/immortalwrt/feeds.conf.default
+ls /home/build/immortalwrt
 echo -e "===== feeds.conf.default 打印结束 =====\n"
 
 
