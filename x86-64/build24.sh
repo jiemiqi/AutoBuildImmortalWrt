@@ -119,10 +119,10 @@ ls /home/build/immortalwrt
 # cd /home/build/immortalwrt/packages
 # git clone https://github.com/jerrykuku/luci-theme-argon.git
 
-# cd "/home/build/immortalwrt"
-# # cat ./scripts/feeds
-# ./scripts/feeds update -a
-# ./scripts/feeds install -a
+cd "/home/build/immortalwrt"
+cat ./scripts/feeds
+./scripts/feeds update -a
+./scripts/feeds install -a
 
 # echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
