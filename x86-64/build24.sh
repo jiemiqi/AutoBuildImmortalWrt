@@ -87,10 +87,27 @@ else
     echo "⚪️ 未选择 luci-app-openclash"
 fi
 
+REPO_FILE="/home/build/immortalwrt/repositories.conf"
 
-echo -e "\n===== 当前 feeds.conf.default 配置内容 ====="
-cat /home/build/immortalwrt/repositories.conf
-echo -e "===== feeds.conf.default 打印结束 =====\n"
+echo "⚪️ 修改为中科大源"
+cat > "$REPO_FILE" << EOF
+src/gz immortalwrt_core https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/targets/x86/64/packages
+src/gz immortalwrt_base https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/base
+src/gz immortalwrt_kmods https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/targets/x86/64/kmods/6.6.122-1-e7e50fbc0aafa7443418a79928da2602
+src/gz immortalwrt_luci https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/luci
+src/gz immortalwrt_packages https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/packages
+src/gz immortalwrt_routing https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/routing
+src/gz immortalwrt_telephony https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/24.10.5/packages/x86_64/telephony
+EOF
+
+echo -e "\n===== 当前 $REPO_FILE 配置内容 ====="
+cat $REPO_FILE
+echo -e "===== $REPO_FILE 打印结束 =====\n"
+
+echo "⚪️ 更新软件"
+
+/home/build/immortalwrt/scripts/feeds update -a
+/home/build/immortalwrt/scripts/feeds install -a
 
 
 # 构建镜像
