@@ -3,7 +3,7 @@
 source shell/custom-packages.sh
 echo "第三方软件包: $CUSTOM_PACKAGES"
 LOGFILE="/tmp/uci-defaults-log.txt"
-echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
+echo "Starting 99-custom.sh at $(date)" >>$LOGFILE
 echo "编译固件大小为: $PROFILE MB"
 echo "Include Docker: $INCLUDE_DOCKER"
 
@@ -11,7 +11,7 @@ echo "Create pppoe-settings"
 mkdir -p /home/build/immortalwrt/files/etc/config
 
 # 创建pppoe配置文件 yml传入环境变量ENABLE_PPPOE等 写入配置文件 供99-custom.sh读取
-cat << EOF > /home/build/immortalwrt/files/etc/config/pppoe-settings
+cat <<EOF >/home/build/immortalwrt/files/etc/config/pppoe-settings
 enable_pppoe=${ENABLE_PPPOE}
 pppoe_account=${PPPOE_ACCOUNT}
 pppoe_password=${PPPOE_PASSWORD}
@@ -65,43 +65,41 @@ PACKAGES="$PACKAGES luci-i18n-filemanager-zh-cn"
 # 合并imm仓库以外的第三方插件
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
 
-
 # 判断是否需要编译 Docker 插件
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
-    PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
-    echo "Adding package: luci-i18n-dockerman-zh-cn"
+  PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
+  echo "Adding package: luci-i18n-dockerman-zh-cn"
 fi
 
 # 若构建openclash 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
-    echo "✅ 已选择 luci-app-openclash，添加 openclash core"
-    OPENCLASH_CORE_DIR=files/etc/openclash/core
-    mkdir -p $OPENCLASH_CORE_DIR
-    cd $OPENCLASH_CORE_DIR
+  echo "✅ 已选择 luci-app-openclash，添加 openclash core"
+  OPENCLASH_CORE_DIR=files/etc/openclash/core
+  mkdir -p $OPENCLASH_CORE_DIR
+  cd $OPENCLASH_CORE_DIR
 
-    # Download clash_meta
-    echo "正在下载Clash Meta"
-    CLASH_DEV_URL="https://github.com/vernesong/OpenClash/releases/download/Clash/clash-linux-amd64.tar.gz"
-    CLASH_TUN_URL="https://raw.githubusercontent.com/vernesong/OpenClash/refs/heads/core/master/premium/clash-linux-amd64-2023.08.17-13-gdcc8d87.gz"
-    CLASH_META_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.19.20/mihomo-linux-amd64-v1.19.20.gz"
+  # Download clash_meta
+  echo "正在下载Clash Meta"
+  CLASH_DEV_URL="https://github.com/vernesong/OpenClash/releases/download/Clash/clash-linux-amd64.tar.gz"
+  CLASH_TUN_URL="https://raw.githubusercontent.com/vernesong/OpenClash/refs/heads/core/master/premium/clash-linux-amd64-2023.08.17-13-gdcc8d87.gz"
+  CLASH_META_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.19.20/mihomo-linux-amd64-v1.19.20.gz"
 
-    wget -qO- "$CLASH_DEV_URL" | tar xOvz > clash && chmod +x clash
-    wget -qO- "$CLASH_TUN_URL" | gunzip -c > clash_tun && chmod +x clash_tun
-    wget -qO- "$CLASH_META_URL" | gunzip -c > clash_meta && chmod +x clash_meta
+  wget -qO- "$CLASH_DEV_URL" | tar xOvz >clash && chmod +x clash
+  wget -qO- "$CLASH_TUN_URL" | gunzip -c >clash_tun && chmod +x clash_tun
+  wget -qO- "$CLASH_META_URL" | gunzip -c >clash_meta && chmod +x clash_meta
 
-
-    # Download GeoIP and GeoSite
-    wget -qO GeoSite.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-    wget -qO GeoIP.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoIP.dat"
-    wget -qO geoip.metadb "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb"
+  # Download GeoIP and GeoSite
+  wget -qO GeoSite.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  wget -qO GeoIP.dat "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoIP.dat"
+  wget -qO geoip.metadb "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb"
 else
-    echo "⚪️ 未选择 luci-app-openclash"
+  echo "⚪️ 未选择 luci-app-openclash"
 fi
 
 REPO_FILE="/home/build/immortalwrt/repositories.conf"
 
 echo "⚪️ 修改为中科大源 immortalwrt版本：$luci_version"
-cat > "$REPO_FILE" << EOF
+cat >"$REPO_FILE" <<EOF
 src/gz immortalwrt_core https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/targets/x86/64/packages
 src/gz immortalwrt_base https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/packages/x86_64/base
 src/gz immortalwrt_kmods https://chinanet.mirrors.ustc.edu.cn/immortalwrt/releases/$luci_version/targets/x86/64/kmods/6.6.122-1-e7e50fbc0aafa7443418a79928da2602
@@ -128,12 +126,6 @@ cd "/home/build/immortalwrt"
 
 echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
-
-
-
-
-
-
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
 echo "$PACKAGES"
@@ -141,8 +133,8 @@ echo "$PACKAGES"
 make image PROFILE="generic" PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$PROFILE
 
 if [ $? -ne 0 ]; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
-    exit 1
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
+  exit 1
 fi
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Build completed successfully."

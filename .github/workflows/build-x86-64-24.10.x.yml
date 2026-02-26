@@ -20,9 +20,9 @@ on:
         required: true
         default: "192.168.1.11"
       profile:
-        description: '请输入要编译固件大小 单位(MB)'
+        description: "请输入要编译固件大小 单位(MB)"
         required: true
-        default: '2048'
+        default: "2048"
       enable_store:
         description: "集成 store 商店"
         required: false
@@ -32,19 +32,19 @@ on:
         description: |
           是否编译 Docker 插件
         required: true
-        default: 'yes'
+        default: "yes"
         type: choice
         options:
-          - 'yes'
-          - 'no'
+          - "yes"
+          - "no"
       enable_pppoe:
         description: "是否配置PPPoE拨号信息?"
         required: true
-        default: 'no'
+        default: "no"
         type: choice
         options:
-        - 'yes'
-        - 'no'
+          - "yes"
+          - "no"
       pppoe_account:
         description: "宽带账号 (若启用PPPoE)"
         required: false
@@ -69,7 +69,7 @@ jobs:
           echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
           echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
           # 后续步骤会将该文件映射到路由器/etc/config/custom_router_ip.txt 以便用于开机脚本99-custom.sh读取用户设置的ip
-      
+
       - name: Validate PPPoE Inputs
         run: |
           if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
@@ -78,7 +78,7 @@ jobs:
               exit 1
             fi
           fi
-      
+
       - name: Enable Store integration
         run: |
           if [ "${{ github.event.inputs.enable_store }}" == "true" ]; then
@@ -90,12 +90,11 @@ jobs:
 
       - name: 修改源版本-${{ github.event.inputs.luci_version }}
         run: |
-            # 1. 处理特殊字符（避免 sed 解析报错）
-            LUCI_VERSION="${{ github.event.inputs.luci_version }}"
-            # 2. 在文件第1行插入变量定义（如果文件为空也能正常执行）
-            sed -i "1i luci_version=$LUCI_VERSION" x86-64/build24.sh
+          # 1. 处理特殊字符（避免 sed 解析报错）
+          LUCI_VERSION="${{ github.event.inputs.luci_version }}"
+          # 2. 在文件第1行插入变量定义（如果文件为空也能正常执行）
+          sed -i "1i luci_version=$LUCI_VERSION" x86-64/build24.sh
         shell: bash
-
 
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
@@ -117,7 +116,6 @@ jobs:
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
             -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
-          
 
       - name: Create info
         run: |
@@ -126,7 +124,7 @@ jobs:
           <a href="https://wkdaily.cpolar.cn/archives/1">
            <img src="https://img.shields.io/badge/若下载慢可套用国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge"/>
           </a>
-          
+
           - 🏠 **后台地址**: ${{ github.event.inputs.custom_router_ip }}
           - 👤 **用户名**: root
           - 🔑 **密码**: 无
@@ -141,10 +139,18 @@ jobs:
 
       - name: 获取时间
         run: |
-          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
+          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
           echo "TIME=$TIME" >> $GITHUB_ENV
           echo $env.TIME
-      
+
+      - name: 列出 ${{ github.workspace }} 文件夹的树状结构
+        run: |
+          # 安装 tree（Ubuntu 镜像默认没有）
+          sudo apt update && sudo apt install -y tree
+          # 列出 bin 文件夹的树状结构（限制3层）
+          tree -L 5 ${{ github.workspace }}
+        shell: bash
+
       - name: 压缩bin
         run: |
           cd ${{ github.workspace }}
