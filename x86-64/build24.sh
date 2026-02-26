@@ -87,6 +87,12 @@ else
     echo "⚪️ 未选择 luci-app-openclash"
 fi
 
+
+echo -e "\n===== 当前 feeds.conf.default 配置内容 ====="
+cat /home/build/immortalwrt/feeds.conf.default
+echo -e "===== feeds.conf.default 打印结束 =====\n"
+
+
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
 echo "$PACKAGES"
