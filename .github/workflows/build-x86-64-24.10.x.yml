@@ -155,12 +155,12 @@ jobs:
           tree -L 5 ${{ github.workspace }}
         shell: bash
 
-      - name: 提供下载压缩包
-        uses: actions/upload-artifact@v4
-        with:
-          name: ImmortWrt-x86-64-${{ env.TIME }}
-          path: ${{ github.workspace }}/bin/targets/x86/64/
-          retention-days: 5
+     # - name: 提供下载压缩包
+      #  uses: actions/upload-artifact@v4
+      #  with:
+     #     name: ImmortWrt-x86-64-${{ env.TIME }}
+     #     path: ${{ github.workspace }}/bin/targets/x86/64/
+      #    retention-days: 5
 
       - name: 将 ImmortWrt 上传为发布资源
         uses: softprops/action-gh-release@v2.5.0
