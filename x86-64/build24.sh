@@ -113,18 +113,12 @@ echo -e "\n===== 当前 $REPO_FILE 配置内容 ====="
 cat $REPO_FILE
 echo -e "===== $REPO_FILE 打印结束 =====\n"
 
-ls /home/build/immortalwrt
+# ls /home/build/immortalwrt
 
-# echo "⚪️ 添加主题"
-# cd /home/build/immortalwrt/packages
-# git clone https://github.com/jerrykuku/luci-theme-argon.git
-
+echo "⚪️ 更新软件"
 cd "/home/build/immortalwrt"
-cat ./scripts/feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
-
-# echo "✅ 已添加主题-jerrykuku/luci-theme-argon"
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
