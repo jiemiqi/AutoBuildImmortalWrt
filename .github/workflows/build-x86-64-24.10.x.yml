@@ -139,7 +139,7 @@ jobs:
 
       - name: 获取时间
         run: |
-          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d~%H:%M:%S')"
+          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d_%H-%M-%S')"
           echo "TIME=$TIME" >> $GITHUB_ENV
           echo $env.TIME
         shell: bash
